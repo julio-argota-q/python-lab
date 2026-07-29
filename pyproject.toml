@@ -1,0 +1,11 @@
+[project]
+name = "python-lab"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "exercises/01-vector",
+    "exercises/02-log-pipeline",
+]
