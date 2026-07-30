@@ -6,6 +6,6 @@ dependencies = []
 
 [tool.uv.workspace]
 members = [
-    "exercises/01-vector",
-    "exercises/02-log-pipeline",
+    "exercises/vector",
+    "exercises/log-pipeline",
 ]
