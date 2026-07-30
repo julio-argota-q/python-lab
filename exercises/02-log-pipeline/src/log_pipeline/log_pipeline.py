@@ -23,9 +23,13 @@ class LogRecord:
 
 def parse_log_entry(log_entries:Iterable[str]) -> Iterator[LogRecord]:
     for entry in log_entries:
+
         parsed_entry = entry.split(maxsplit=3)
+        if len(parsed_entry) < 4:
+            print(f'The log entry has a wrong format:{entry}')
+            continue
         try:
-            timestamp = datetime.strptime(f'{parsed_entry[0]} {parsed_entry[1]}', DATETIME_FORMAT)    
+            timestamp = datetime.strptime(f'{parsed_entry[0]} {parsed_entry[1]}', DATETIME_FORMAT)
             severity = LogLevel(parsed_entry[2])
             message = parsed_entry[3]
             yield LogRecord(timestamp, severity, message)
@@ -43,38 +47,7 @@ def group_by_minute(log_records:Iterable[LogRecord]) -> Iterator[tuple[datetime,
     for min, log_group in groupby(log_records, key=lambda log_record: log_record.timestamp.replace(second=0, microsecond=0)):
         yield (min, log_group)
 
-def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable]], n:int) -> Iterator[tuple[datetime, dict[str,int]]]:
+
+def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable]], k:int = 1) -> Iterator[tuple[datetime, list[tuple[str,int]]]]:
     for timestamp, log_group in log_groups:
-        yield (timestamp, Counter( log_record.message for log_record in log_group) )
-
-def main():
-    entries = [
-        '2025-01-10 14:33:02 WARNING Medium memory usage during the proccess',
-        '2025-01-10 14:33:06 ERROR High memory usage during the proccess',
-        '2025-01-10 14:34:06 ERROR High memory usage during the proccess',
-        '2025-01-10 14:34:02 DEBUG High memory usage during the proccess',
-        "2025-01-10 14:35:01 INFO Server started",
-        "2025-01-10 14:35:15 ERROR Database connection failed",
-        "2025-01-10 14:35:20 ERROR Database connection failed",
-        "2025-01-10 14:36:02 WARNING Medium memory usage"
-    ]
-
-    pipeline = fileter_by_log_level(parse_log_entry(entries), {LogLevel.DEBUG, LogLevel.ERROR})
-
-#    for log_record in pipeline:
-#        print(log_record)
-
-#    for min, group in group_by_minute(pipeline):
-#        print(min)
-#        for log in group:
-#            print(log)
-
-    for min, group in top_k_messages(group_by_minute(pipeline),4):
-        print(min, group)
-
-
-
-
-
-if __name__ == '__main__':    
-    main()
+        yield (timestamp, Counter( log_record.message for log_record in log_group).most_common(k) )
