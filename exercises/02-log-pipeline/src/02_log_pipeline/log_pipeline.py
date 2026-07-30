@@ -23,7 +23,11 @@ class LogRecord:
 
 def parse_log_entry(log_entries:Iterable[str]) -> Iterator[LogRecord]:
     for entry in log_entries:
+
         parsed_entry = entry.split(maxsplit=3)
+        if len(parsed_entry) < 4:
+            print(f'The log entry has a wrong format:{entry}')
+            continue
         try:
             timestamp = datetime.strptime(f'{parsed_entry[0]} {parsed_entry[1]}', DATETIME_FORMAT)
             severity = LogLevel(parsed_entry[2])
@@ -44,6 +48,6 @@ def group_by_minute(log_records:Iterable[LogRecord]) -> Iterator[tuple[datetime,
         yield (min, log_group)
 
 
-def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable]], n:int) -> Iterator[tuple[datetime, dict[str,int]]]:
+def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable]], k:int = 1) -> Iterator[tuple[datetime, dict[str,int]]]:
     for timestamp, log_group in log_groups:
-        yield (timestamp, Counter( log_record.message for log_record in log_group) )
+        yield (timestamp, Counter( log_record.message for log_record in log_group).most_common(k) )

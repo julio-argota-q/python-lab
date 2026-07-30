@@ -15,4 +15,15 @@ Filtering. - Grouping. - Top-K frequency.
 
 
 logentry example 
-2025-0f-10 14:33:02 WARNING High memory usage during the proccess
+    log_entries = [
+        '2025-01-10 14:32:01 INFO Server started',
+        '2025-01-10 14:32:15 ERROR Database connection failed',
+        '2025-01-10 14:32:20 ERROR Database connection failed',
+        '2025-01-10 14:33:02 WARNING High memory usage',
+        '2025-01-10 14:34:01 INFO Server started',
+        '2025-01-10 14:35:15 ERROR Database connection failed',
+        '2025-01-10 14:35:17 WARNING High memory usage',
+        '2025-01-10 14:35:20 ERROR Database connection failed',
+        '2025-01-10 14:35:22 WARNING High memory usage',
+        '2025-01-10 14:36:02 WARNING High memory usage'
+    ]

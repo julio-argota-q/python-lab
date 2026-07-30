@@ -19,3 +19,13 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.0",
 ]
+
+[tool.ruff]
+line-length = 88
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
