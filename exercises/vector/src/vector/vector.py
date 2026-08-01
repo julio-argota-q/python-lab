@@ -12,10 +12,12 @@
     from_string() constructor. - Validate dimensions and operand types. -
     Raise appropriate exceptions for invalid operations.
 '''
+from __future__ import annotations
 
 import json
 from array import array
 from collections.abc import Iterable, Iterator
+from typing import overload
 
 
 class Vector:
@@ -27,7 +29,15 @@ class Vector:
     def __len__(self) -> int:
         return len(self._components)
 
-    def __getitem__(self, key: int | slice) -> 'Vector' | float:
+    @overload
+    def __getitem__(self, key: int) -> float:
+        ...
+
+    @overload
+    def __getitem__(self, key: slice) -> Vector:
+        ...
+
+    def __getitem__(self, key: int | slice) -> float | Vector:
 
         if isinstance(key, slice):
             return Vector(self._components[key])
@@ -37,31 +47,31 @@ class Vector:
     def __iter__(self) -> Iterator[float]:
         return iter(self._components)
 
-    def __add__(self, other:'Vector') -> 'Vector':
+    def __add__(self, other:Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented
         self._check_dim(other)
         return Vector([ c1 + c2 for c1, c2 in zip(self._components, other._components)])
 
-    def __sub__(self, other:'Vector') -> 'Vector':
+    def __sub__(self, other:Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented
         self._check_dim(other)
         return Vector([ c1 - c2 for c1, c2 in zip(self._components, other._components)])
 
-    def __rmul__(self, scalar:float) -> 'Vector':
+    def __rmul__(self, scalar:float) -> Vector:
         if not isinstance(scalar, (int,float)):
             raise TypeError('This operation need a scalar')    
         return Vector([scalar * c  for c in self._components])
 
-    def __mul__(self, scalar:float) -> 'Vector':
+    def __mul__(self, scalar:float) -> Vector:
         if not isinstance(scalar, (int,float)):
             raise TypeError('This operation need a scalar')
         return Vector([scalar * c  for c in self._components])
 
-    def __matmul__(self, other:'Vector') -> float:
+    def __matmul__(self, other:Vector) -> float:
         self._check_dim(other)
-        return sum([c1 * c2 for c1,c2 in zip(other._components, self._components)])
+        return sum(c1 * c2 for c1,c2 in zip(other._components, self._components))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Vector):
@@ -75,7 +85,7 @@ class Vector:
     def __repr__(self) -> str:
         return f'Vector({', '.join(str(c) for c in self._components)})'
 
-    def _check_dim(self, other:'Vector') -> None:
+    def _check_dim(self, other:Vector) -> None:
         if len(other) != len(self):
             raise ValueError('Vectors need to be have same dimension')
 
@@ -83,6 +93,6 @@ class Vector:
         return json.dumps(list(self._components))
 
     @classmethod
-    def from_string(cls, components:str) -> 'Vector':
+    def from_string(cls, components:str) -> Vector:
         return Vector([float(c.strip()) for c in components.split(',') if c.strip()])
     
