@@ -137,7 +137,7 @@ wheels = [
 [[package]]
 name = "log-pipeline"
 version = "0.1.0"
-source = { editable = "exercises/02-log-pipeline" }
+source = { editable = "exercises/log-pipeline" }
 
 [package.dev-dependencies]
 dev = [
@@ -303,7 +303,7 @@ wheels = [
 [[package]]
 name = "vector"
 version = "0.1.0"
-source = { editable = "exercises/01-vector" }
+source = { editable = "exercises/vector" }
 
 [package.dev-dependencies]
 dev = [
