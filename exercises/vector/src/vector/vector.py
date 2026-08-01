@@ -27,15 +27,14 @@ class Vector:
     def __len__(self) -> int:
         return len(self._components)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int | slice) -> 'Vector' | float:
 
         if isinstance(key, slice):
-            print(key)
             return Vector(self._components[key])
         
         return self._components[key]
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[float]:
         return iter(self._components)
 
     def __add__(self, other:'Vector') -> 'Vector':
@@ -70,7 +69,7 @@ class Vector:
         
         return self._components == other._components
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self._components)
 
     def __repr__(self) -> str:
