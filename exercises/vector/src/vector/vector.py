@@ -30,6 +30,7 @@ class Vector:
     def __getitem__(self, key):
 
         if isinstance(key, slice):
+            print(key)
             return Vector(self._components[key])
         
         return self._components[key]
@@ -85,4 +86,4 @@ class Vector:
     @classmethod
     def from_string(cls, components:str) -> 'Vector':
         return Vector([float(c.strip()) for c in components.split(',') if c.strip()])
-
+    
