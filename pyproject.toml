@@ -8,4 +8,5 @@ dependencies = []
 members = [
     "exercises/vector",
     "exercises/log-pipeline",
+    "exercises/cache",
 ]
