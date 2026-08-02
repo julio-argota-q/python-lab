@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from itertools import groupby
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 class LogLevel(Enum):
     DEBUG = 'DEBUG'
@@ -37,17 +37,16 @@ def parse_log_entry(log_entries:Iterable[str]) -> Iterator[LogRecord]:
             print(f'Error: {e} produced by log entry:{entry}')
 
 
-def fileter_by_log_level(log_records:Iterable[LogRecord], log_levels:set[LogLevel]) -> Iterator[LogRecord]:
+def filter_by_log_level(log_records:Iterable[LogRecord], log_levels:set[LogLevel]) -> Iterator[LogRecord]:
     for log_record in log_records:
         if log_record.log_level in log_levels:
             yield log_record
 
 
 def group_by_minute(log_records:Iterable[LogRecord]) -> Iterator[tuple[datetime, Iterator[LogRecord]]]:
-    for min, log_group in groupby(log_records, key=lambda log_record: log_record.timestamp.replace(second=0, microsecond=0)):
-        yield (min, log_group)
+    yield from groupby(log_records, key=lambda log_record: log_record.timestamp.replace(second=0, microsecond=0))
 
 
-def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable]], k:int = 1) -> Iterator[tuple[datetime, list[tuple[str,int]]]]:
+def top_k_messages(log_groups:Iterable[tuple[datetime, Iterable[LogRecord]]], k:int = 1) -> Iterator[tuple[datetime, list[tuple[str,int]]]]:
     for timestamp, log_group in log_groups:
         yield (timestamp, Counter( log_record.message for log_record in log_group).most_common(k) )
