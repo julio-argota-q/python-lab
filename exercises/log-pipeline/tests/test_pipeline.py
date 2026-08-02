@@ -7,7 +7,7 @@ from log_pipeline import (
     filter_by_log_level,
     group_by_minute,
     parse_log_entry,
-    top_k_messages,
+    top_k_messages
 )
 
 
@@ -67,7 +67,7 @@ def test_group_by_minute() -> None:
     assert 3 == len(groups[3][1])
     assert 1 == len(groups[4][1])
 
-def test_top_k_messages():
+def test_top_k_messages() -> None:
     log_entries = get_log_entries()
     grouped_log_records = group_by_minute(parse_log_entry(log_entries))
     top_messages = list(top_k_messages(grouped_log_records, 2))
