@@ -23,7 +23,6 @@ class LogRecord:
 
 def parse_log_entry(log_entries:Iterable[str]) -> Iterator[LogRecord]:
     for entry in log_entries:
-
         parsed_entry = entry.split(maxsplit=3)
         if len(parsed_entry) < 4:
             print(f'The log entry has a wrong format:{entry}')
@@ -38,9 +37,7 @@ def parse_log_entry(log_entries:Iterable[str]) -> Iterator[LogRecord]:
 
 
 def filter_by_log_level(log_records:Iterable[LogRecord], log_levels:set[LogLevel]) -> Iterator[LogRecord]:
-    for log_record in log_records:
-        if log_record.log_level in log_levels:
-            yield log_record
+    yield from filter(lambda record: record.log_level in log_levels,  log_records)
 
 
 def group_by_minute(log_records:Iterable[LogRecord]) -> Iterator[tuple[datetime, Iterator[LogRecord]]]:
