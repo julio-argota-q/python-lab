@@ -77,3 +77,27 @@ def test_top_k_messages() -> None:
     assert [('Database connection failed',2), ('Server started',1)] == top_messages[0][1]
     assert [('Database connection failed',2), ('High memory usage',1)] == top_messages[3][1]
     assert [('High memory usage',1)] == top_messages[4][1]
+
+def test_pipeline() -> None:
+    log_entries = get_log_entries()
+    pipeline = top_k_messages(
+        group_by_minute(
+            filter_by_log_level(
+                parse_log_entry(log_entries), {LogLevel.WARNING, LogLevel.ERROR}
+            )
+        ),
+        k= 2
+    )
+
+    messages = [(timestamp, list(top_messages)) for timestamp, top_messages in pipeline]
+
+    assert datetime(2025,1,10,14,32,0) == messages[0][0]
+    assert datetime(2025,1,10,14,33,0) == messages[1][0]
+    assert datetime(2025,1,10,14,35,0) == messages[2][0]
+    assert datetime(2025,1,10,14,36,0) == messages[3][0]
+
+    assert ('Database connection failed', 2) == messages[0][1][0]
+    assert ('High memory usage', 1) == messages[1][1][0]
+    assert ('Database connection failed', 2) == messages[2][1][0]
+    assert ('High memory usage', 1) == messages[2][1][1]
+    assert ('High memory usage', 1) == messages[3][1][0]
